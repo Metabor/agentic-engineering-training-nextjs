@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { organisation, description } = body;
+    const { organisation, description, country } = body;
 
     if (!organisation) {
       return errorResponse(400, "Organisation is required");
@@ -65,10 +65,15 @@ export async function POST(request: NextRequest) {
       return errorResponse(400, "Organisation must be at most 255 characters");
     }
 
+    if (country && country.length > 100) {
+      return errorResponse(400, "Country must be at most 100 characters");
+    }
+
     const contact = await prisma.contact.create({
       data: {
         organisation,
         description: description || null,
+        country: country || null,
         ownerId: result.user.id,
       },
       include: {

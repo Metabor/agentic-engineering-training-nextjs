@@ -17,6 +17,7 @@ import { ContactsApi, type Contact } from "@/lib/client/api";
 interface EditContactFormData {
   organisation: string;
   description?: string;
+  country?: string;
 }
 
 interface EditContactDialogProps {
@@ -43,6 +44,7 @@ export function EditContactDialog({
       reset({
         organisation: contact.organisation,
         description: contact.description || "",
+        country: contact.country || "",
       });
     }
   }, [open, contact, reset]);
@@ -95,6 +97,17 @@ export function EditContactDialog({
                       {...register("description")}
                       placeholder="Enter description (optional)"
                     />
+                  </Field.Root>
+
+                  <Field.Root invalid={!!errors.country}>
+                    <Field.Label>Country</Field.Label>
+                    <Input
+                      {...register("country", {
+                        maxLength: { value: 100, message: "Country must be at most 100 characters" },
+                      })}
+                      placeholder="Enter country (optional)"
+                    />
+                    {errors.country && <Field.ErrorText>{errors.country.message}</Field.ErrorText>}
                   </Field.Root>
                 </Stack>
               </form>

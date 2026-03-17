@@ -49,6 +49,7 @@ export default function ContactsPage() {
               <Table.Row>
                 <Table.ColumnHeader>Organisation</Table.ColumnHeader>
                 <Table.ColumnHeader>Description</Table.ColumnHeader>
+                <Table.ColumnHeader>Country</Table.ColumnHeader>
                 <Table.ColumnHeader width="100px">Actions</Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
@@ -65,11 +66,14 @@ export default function ContactsPage() {
                     <Table.Cell>
                       <Skeleton height="20px" />
                     </Table.Cell>
+                    <Table.Cell>
+                      <Skeleton height="20px" />
+                    </Table.Cell>
                   </Table.Row>
                 ))
               ) : contacts.length === 0 ? (
                 <Table.Row>
-                  <Table.Cell colSpan={3}>
+                  <Table.Cell colSpan={4}>
                     <Text textAlign="center" color="gray.500" py={4}>
                       No contacts yet. Add your first contact!
                     </Text>
@@ -82,7 +86,10 @@ export default function ContactsPage() {
                       {contact.organisation}
                     </Table.Cell>
                     <Table.Cell color="gray.600">
-                      {contact.description || "-"}
+                      {contact.description || "–"}
+                    </Table.Cell>
+                    <Table.Cell color="gray.600">
+                      {contact.country || "–"}
                     </Table.Cell>
                     <Table.Cell>
                       <Menu.Root>

@@ -17,6 +17,7 @@ import { ContactsApi } from "@/lib/client/api";
 interface AddContactFormData {
   organisation: string;
   description?: string;
+  country?: string;
 }
 
 export function AddContactDialog() {
@@ -81,6 +82,17 @@ export function AddContactDialog() {
                       {...register("description")}
                       placeholder="Enter description (optional)"
                     />
+                  </Field.Root>
+
+                  <Field.Root invalid={!!errors.country}>
+                    <Field.Label>Country</Field.Label>
+                    <Input
+                      {...register("country", {
+                        maxLength: { value: 100, message: "Country must be at most 100 characters" },
+                      })}
+                      placeholder="Enter country (optional)"
+                    />
+                    {errors.country && <Field.ErrorText>{errors.country.message}</Field.ErrorText>}
                   </Field.Root>
                 </Stack>
               </form>

@@ -25,6 +25,7 @@ model Contact {
   id           String   @id @default(uuid())
   organisation String
   description  String?
+  country      String?
   ownerId      String   @map("owner_id")
   owner        User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now()) @map("created_at")

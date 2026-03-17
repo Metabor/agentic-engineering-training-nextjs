@@ -67,9 +67,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const body = await request.json();
-    const { organisation, description } = body;
+    const { organisation, description, country } = body;
 
-    const updateData: { organisation?: string; description?: string | null } = {};
+    const updateData: { organisation?: string; description?: string | null; country?: string | null } = {};
 
     if (organisation !== undefined) {
       if (!organisation) {
@@ -83,6 +83,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     if (description !== undefined) {
       updateData.description = description || null;
+    }
+
+    if (country !== undefined) {
+      if (country && country.length > 100) {
+        return errorResponse(400, "Country must be at most 100 characters");
+      }
+      updateData.country = country || null;
     }
 
     const updatedContact = await prisma.contact.update({

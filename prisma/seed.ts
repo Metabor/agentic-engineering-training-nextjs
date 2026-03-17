@@ -55,83 +55,81 @@ async function main() {
   });
   console.log(`Created user: ${bob.email}`);
 
-  // Create sample contacts for superuser
-  const superuserContacts = [
-    { organisation: "OpenAI", description: "AI research company" },
-    { organisation: "Anthropic", description: "AI safety company" },
-    { organisation: "Google DeepMind", description: "AI research lab" },
-    { organisation: "Meta AI", description: "AI research division" },
-    { organisation: "Microsoft Research", description: "Technology research" },
-  ];
-
-  for (const contact of superuserContacts) {
-    const existingContact = await prisma.contact.findFirst({
-      where: {
-        organisation: contact.organisation,
-        ownerId: superuser.id,
-      },
-    });
-    if (!existingContact) {
-      await prisma.contact.create({
-        data: {
-          organisation: contact.organisation,
-          description: contact.description,
-          ownerId: superuser.id,
-        },
+  async function upsertContacts(
+    contacts: { organisation: string; description: string; country?: string | null }[],
+    ownerId: string
+  ) {
+    for (const contact of contacts) {
+      const existing = await prisma.contact.findFirst({
+        where: { organisation: contact.organisation, ownerId },
       });
+      if (!existing) {
+        await prisma.contact.create({
+          data: {
+            organisation: contact.organisation,
+            description: contact.description,
+            country: contact.country ?? null,
+            ownerId,
+          },
+        });
+      }
     }
   }
+
+  // Create sample contacts for superuser
+  const superuserContacts = [
+    { organisation: "OpenAI", description: "AI research company", country: "United States" },
+    { organisation: "Anthropic", description: "AI safety company", country: "United States" },
+    { organisation: "Google DeepMind", description: "AI research lab", country: null },
+    { organisation: "Meta AI", description: "AI research division", country: "United States" },
+    { organisation: "Microsoft Research", description: "Technology research", country: null },
+    { organisation: "Amazon Web Services", description: "Cloud computing platform", country: "United States" },
+    { organisation: "NVIDIA Corporation", description: "GPU and AI hardware manufacturer", country: "United States" },
+    { organisation: "Hugging Face", description: "Open-source AI model hub", country: "United Kingdom" },
+    { organisation: "Stability AI", description: "Generative AI startup", country: "United Kingdom" },
+    { organisation: "Cohere", description: "Enterprise NLP platform", country: "United States" },
+  ];
+
+  await upsertContacts(superuserContacts, superuser.id);
   console.log(`Created ${superuserContacts.length} contacts for superuser`);
 
   // Create sample contacts for Alice
   const aliceContacts = [
-    { organisation: "Acme Corp", description: "Manufacturing company" },
-    { organisation: "TechStart Inc", description: "Startup accelerator" },
+    { organisation: "Acme Corp", description: "Manufacturing company", country: null },
+    { organisation: "TechStart Inc", description: "Startup accelerator", country: null },
+    { organisation: "BrightFuture GmbH", description: "Renewable energy consulting", country: "Germany" },
+    { organisation: "Vertex Solutions", description: "Enterprise software integrations", country: null },
+    { organisation: "NovaMed AG", description: "Medical device manufacturer", country: "Switzerland" },
+    { organisation: "Finbridge Capital", description: "Venture capital firm", country: null },
+    { organisation: "PixelCraft Studios", description: "UX design agency", country: null },
+    { organisation: "GreenRoute Logistics", description: "Sustainable supply chain", country: null },
+    { organisation: "EduSpark Learning", description: "Online education platform", country: null },
+    { organisation: "AutoPilot Labs", description: "Autonomous vehicle research", country: null },
+    { organisation: "HealthTrack GmbH", description: "Digital health monitoring", country: "Germany" },
+    { organisation: "LegalEase Software", description: "Legal tech SaaS", country: null },
   ];
 
-  for (const contact of aliceContacts) {
-    const existingContact = await prisma.contact.findFirst({
-      where: {
-        organisation: contact.organisation,
-        ownerId: alice.id,
-      },
-    });
-    if (!existingContact) {
-      await prisma.contact.create({
-        data: {
-          organisation: contact.organisation,
-          description: contact.description,
-          ownerId: alice.id,
-        },
-      });
-    }
-  }
+  await upsertContacts(aliceContacts, alice.id);
   console.log(`Created ${aliceContacts.length} contacts for Alice`);
 
   // Create sample contacts for Bob
   const bobContacts = [
-    { organisation: "DataFlow Systems", description: "Data analytics" },
-    { organisation: "CloudNine Hosting", description: "Cloud infrastructure" },
-    { organisation: "SecureNet", description: "Cybersecurity services" },
+    { organisation: "DataFlow Systems", description: "Data analytics", country: null },
+    { organisation: "CloudNine Hosting", description: "Cloud infrastructure", country: null },
+    { organisation: "SecureNet", description: "Cybersecurity services", country: null },
+    { organisation: "Blockchain Ventures", description: "Web3 investment firm", country: null },
+    { organisation: "RetailEdge AG", description: "Retail analytics platform", country: "Switzerland" },
+    { organisation: "QuickShip Express", description: "Last-mile delivery service", country: null },
+    { organisation: "SmartHome Systems", description: "IoT home automation", country: null },
+    { organisation: "CyberGuard Inc", description: "Penetration testing & security audits", country: null },
+    { organisation: "MarketPulse GmbH", description: "Market research and insights", country: "Germany" },
+    { organisation: "CodeBridge Labs", description: "Offshore software development", country: null },
+    { organisation: "AgroTech Solutions", description: "Precision agriculture technology", country: null },
+    { organisation: "TravelSense AG", description: "Corporate travel management", country: "Switzerland" },
+    { organisation: "FinScope Analytics", description: "Financial data intelligence", country: null },
   ];
 
-  for (const contact of bobContacts) {
-    const existingContact = await prisma.contact.findFirst({
-      where: {
-        organisation: contact.organisation,
-        ownerId: bob.id,
-      },
-    });
-    if (!existingContact) {
-      await prisma.contact.create({
-        data: {
-          organisation: contact.organisation,
-          description: contact.description,
-          ownerId: bob.id,
-        },
-      });
-    }
-  }
+  await upsertContacts(bobContacts, bob.id);
   console.log(`Created ${bobContacts.length} contacts for Bob`);
 
   console.log("Seeding completed!");

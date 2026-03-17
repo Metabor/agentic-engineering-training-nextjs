@@ -2,6 +2,7 @@
 
 import { Box, Heading, Text, Stack } from "@chakra-ui/react";
 import { useAuth } from "@/lib/client/useAuth";
+import QuickStatsCard from "@/components/dashboard/QuickStatsCard";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -18,18 +19,11 @@ export default function DashboardPage() {
           </Text>
         </Box>
 
-        <Box
-          bg="white"
-          p={6}
-          borderRadius="lg"
-          boxShadow="sm"
-        >
+        <Box>
           <Heading size="md" mb={4}>
             Quick Stats
           </Heading>
-          <Text color="gray.600">
-            Use the sidebar to navigate to different sections of the application.
-          </Text>
+          <QuickStatsCard />
         </Box>
       </Stack>
     </Box>
